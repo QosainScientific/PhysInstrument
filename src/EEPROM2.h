@@ -1,5 +1,9 @@
 #pragma once
-#ifdef MCU_STM32F103CB
+#if defined(STM32F4xx)
+#include "EEPROM_Hal\eeprom.h"
+#include "EEPROM_Hal\EEPROMM.h"
+#define EEPObject EEPROMM
+#elif defined(MCU_STM32F103CB)
 #include "EEPROMM.h"
 #define EEPObject EEPROMM
 #else

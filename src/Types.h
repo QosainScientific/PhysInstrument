@@ -1,4 +1,4 @@
-#ifdef STM32F1xx
+#if defined(STM32F1xx) || defined(STM32F4xx)
 #define ARDUINO_ARCH_STM32F1
 #define uint8 uint8_t
 #define uint16 uint16_t

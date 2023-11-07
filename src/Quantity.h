@@ -46,7 +46,9 @@
 #define PhysInstrument_GetClassID 13
 
 
-#ifdef MCU_STM32F103C8
+#if defined(STM32F4xx)
+
+#elif defined(MCU_STM32F103C8)
 #include "EEPROM_config.h"
 #endif // STM
 #ifdef MCU_STM32F103CB
