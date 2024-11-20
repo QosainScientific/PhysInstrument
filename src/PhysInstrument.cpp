@@ -366,7 +366,6 @@ bool PhysInstrument::communicationStarted(uint8 commandID, uint8* data, uint8 da
         sv++;
         int i = data[0];
 
-#ifdef ARDUINO_ARCH_ESP32
         uint32_t f2 = data[4];
         f2 = data[3] | (f2 << 8);
         f2 = data[2] | (f2 << 8);
@@ -377,9 +376,6 @@ bool PhysInstrument::communicationStarted(uint8 commandID, uint8* data, uint8 da
         InstrumentTrace(F("Setting Value: "));
         InstrumentTraceln(*f);
         Qs[i]->setValue(*f);
-#else
-        Qs[i]->setValue(*((float*)(data + 1)));
-#endif
         quantityLevelCom = true;
         respDataLength = 0;
     }
@@ -387,14 +383,8 @@ bool PhysInstrument::communicationStarted(uint8 commandID, uint8* data, uint8 da
     {
         int i = data[0];
         float f = Qs[i]->makeValue();
-#ifdef ARDUINO_ARCH_ESP32
         uint8_t* d = reinterpret_cast<uint8_t*>(&f);
         resp->AddData(d, 4);
-#else
-        uint8* fPtr = (uint8*)((float*)(&f));
-        for (int i = 0; i < 4; i++)
-            respData[i] = fPtr[i];
-#endif
         quantityLevelCom = true;
         respDataLength = 4;
     }
@@ -492,7 +482,7 @@ MultiSerialResponse* PhysInstrument::communicationStarted(MultiSerialCommand* co
 #if TracePhysInstrument
     else
     {
-        if (command->CommandID() != PhysInstrument_MakeValue)
+        if (command->CommandID() == PhysInstrument_MakeValue)
         {
             InstrumentTrace(F("Make value command, token = "));
         }
@@ -654,7 +644,6 @@ MultiSerialResponse* PhysInstrument::communicationStarted(MultiSerialCommand* co
         sv++;
         int i = command->Data[0];
 
-#ifdef ARDUINO_ARCH_ESP32
         uint32_t f2 = command->Data[4];
         f2 = command->Data[3] | (f2 << 8);
         f2 = command->Data[2] | (f2 << 8);
@@ -665,9 +654,6 @@ MultiSerialResponse* PhysInstrument::communicationStarted(MultiSerialCommand* co
         InstrumentTrace(F("Setting Value: "));
         InstrumentTraceln(*f);
         Qs[i]->setValue(*f);
-#else
-        Qs[i]->setValue(*((float*)(command->Data.ToArray() + 1)));
-#endif
         quantityLevelCom = true;
     }
     else if (command->CommandID() == PhysInstrument_MakeValue)
@@ -675,12 +661,8 @@ MultiSerialResponse* PhysInstrument::communicationStarted(MultiSerialCommand* co
         int i = command->Data[0];
         float f = Qs[i]->makeValue();
 
-#ifdef ARDUINO_ARCH_ESP32
         uint8_t* d = reinterpret_cast<uint8_t*>(&f);
         resp->AddData(d, 4);
-#else
-        resp->AddData((uint8*)((float*)(&f)), 4);
-#endif
         quantityLevelCom = true;
     }
 
