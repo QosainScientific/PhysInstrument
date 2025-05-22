@@ -126,6 +126,15 @@ enum ClassIDs : byte
     ArduinoReader = 60,
     ManualQuantityValue = 61,
     PhysLoggerDigitalPortTesterQuantity = 62,
+    FrequencyCounterQuantity = 63,
+    Altitude = 64,
+    Sound = 65,
+    CrushTester_HCT2020Quantity = 101,
+    CrushTester_MoveUp = 106,
+    CrushTester_MoveDown = 107,
+    CrushTester_UpSpeed = 108,
+    CrushTester_DownSpeed = 109,
+    MeasureLabOnScreenDisplay = 151,
 };
 
 /// <summary>

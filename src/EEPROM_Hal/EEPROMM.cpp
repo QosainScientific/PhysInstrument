@@ -33,7 +33,10 @@ uint16_t EEPROMM_Manager::write(uint16_t address, uint16_t data)
 	//Serial.print(", Ind: ");
 	//Serial.println(address / PageSetsCount);
 	//delay(1);
-	return EEPS[address % PageSetsCount]->write(address / PageSetsCount, data);
+	HAL_FLASH_Unlock();
+	uint16_t written = EEPS[address % PageSetsCount]->write(address / PageSetsCount, data);		
+	HAL_FLASH_Lock();
+	return written;
 }
 
 EEPROMM_Cell::EEPROMM_Cell(uint8_t pageSetIndex)
@@ -58,7 +61,7 @@ EEPROMM_Cell::EEPROMM_Cell(uint8_t pageSetIndex)
 
 uint16_t EEPROMM_Cell::init(void)
 {
-#if BoardVersion== Gen3
+#if BoardVersion == Gen3
 	// Call HAL_Init() and HAL_Flash_Unlock() in setup(). Doesn't work inside function
 #else
 	uint16_t status0, status1;
@@ -237,13 +240,22 @@ uint16_t EEPROMM_Cell::read(uint16_t Address, uint16_t* Data)
 uint16_t EEPROMM_Cell::write(uint16_t Address, uint16_t Data)
 {
 #if BoardVersion == Gen3
-	bool success = EE_WriteVariable(Address, Data);
-	if (!success)
+
+	uint16_t success = EE_WriteVariable(Address, Data);
+	if (success != HAL_OK)
 	{
 		Serial.print("Bad Write @ ");
 		Serial.print(Address);
-		Serial.print(", data = ");
-		Serial.println(Data);
+		Serial.print(", datatoWrite = ");
+		Serial.print(Data);		
+		uint16_t rb = 0;
+		uint16_t rbS = EE_ReadVariable(Address, &rb);
+		Serial.print(", data Read = ");
+		Serial.print(rb);		
+		Serial.print(" (");
+		Serial.print(rbS);
+		Serial.println(")");		
+
 		return EEPROMM_BAD_FLASH;
 	}
 	return EEPROMM_OK;

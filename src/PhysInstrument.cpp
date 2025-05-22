@@ -1009,11 +1009,21 @@ void PhysInstrument::SaveByte(uint16& eepOffset, byte b)
 
 void PhysInstrument::SaveFloat(uint16& eepOffset, float f)
 {
+    #if DebugPhysInstrument
+    Instrument.DebugSerial->print(F("save float: a = "));
+    Instrument.DebugSerial->print(eepOffset);
+    Instrument.DebugSerial->print(F(", v = "));
+    Instrument.DebugSerial->println(f);
+    #endif
+    EEPROM2.PutFloat(eepOffset, f);
+}
+void PhysInstrument::SaveInt16(uint16& eepOffset, int16 f)
+{
     /*Instrument.DebugSerial->print(F("save float: a = "));
     Instrument.DebugSerial->print(eepOffset);
     Instrument.DebugSerial->print(F(", v = "));
     Instrument.DebugSerial->println(f);*/
-    EEPROM2.PutFloat(eepOffset, f);
+    EEPROM2.PutInt16(eepOffset, f);
 }
 void PhysInstrument::SaveString(uint16& eepOffset, String& string)
 {
@@ -1074,6 +1084,21 @@ float PhysInstrument::ResumeFloat(uint16& eepOffset)
     if (Instrument.DebugSerial)
     {
         Instrument.DebugSerial->print(F("resume float: a = "));
+        Instrument.DebugSerial->println(eepOffset);
+        Instrument.DebugSerial->print(F(", v = "));
+        Instrument.DebugSerial->println(f);
+    }
+#endif
+    return f;
+}
+int16 PhysInstrument::ResumeInt16(uint16& eepOffset)
+{
+    int16 f = 0;
+    EEPROM2.GetInt16(eepOffset, f);
+#if DebugPhysInstrument
+    if (Instrument.DebugSerial)
+    {
+        Instrument.DebugSerial->print(F("resume int16: a = "));
         Instrument.DebugSerial->println(eepOffset);
         Instrument.DebugSerial->print(F(", v = "));
         Instrument.DebugSerial->println(f);

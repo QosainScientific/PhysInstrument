@@ -61,10 +61,12 @@ public:
     void ResumeAllVariables();
 #endif
     static void SaveFloat(uint16& eepOffset, float f);
+    static void SaveInt16(uint16& eepOffset, int16 i);
     static void SaveByte(uint16& eepOffset, byte b);
     static void SaveString(uint16& eepOffset, String& string);
     void SaveQInd(uint16& eepOffset, LoggerQuantity* q);
     static float ResumeFloat(uint16& eepOffset);
+    static int16 ResumeInt16(uint16& eepOffset);
     static byte ResumeByte(uint16& eepOffset);
     static String ResumeString(uint16& eepOffset);
     LoggerQuantity* ResumeQInd(uint16& eepOffset);
